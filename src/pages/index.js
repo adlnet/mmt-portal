@@ -39,7 +39,7 @@ export default function Home() {
     {date:"July 23, 2025", time: "9:00 AM EST", announcement: "This tool is currently being piloted to select service members for the US Coast Guard. If you're accessing the MMT from another Service, you may not see any records — this is expected throughout the duration of the pilot effort. We appreciate your understanding as we continue to expand access.", type: "dismiss"}
   ];
   
-  const [mockData, setMockData] = useState(data);
+  const [mockData] = useState(data);
 
   const handleTranscript = transcriptAction => {
     if (transcriptId) {
@@ -58,31 +58,6 @@ export default function Home() {
   }
 
   const handleDownloadTranscript = () => handleTranscript('downloadModernized');
-
-  // Check if user has given consent already, checking local storage as of now as a proof of concept
-  useEffect(() => {
-    if (localStorage.getItem('userInfoConsent')) {
-      const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' } );
-      const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'});
-      const consentAnnouncement = {
-        date: date,
-        time: time,
-        announcement: (
-          <span> You have given consent to use your data. If you would like to make some changes to the consent, please{' '}
-            <span className='text-blue-500 cursor-pointer' role="button" tabIndex={0} onClick={() => {
-              localStorage.removeItem('userInfoConsent');
-              window.location.reload();
-            }}
-            onKeyDown={() => {}}
-            >Click Here</span>
-          </span>
-        ),
-        type: "persist"
-      };
-
-      // setMockData(prevData => [consentAnnouncement, ...prevData]);
-    }
-  }, []);
 
   return (
     <div>
