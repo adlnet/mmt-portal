@@ -1,5 +1,6 @@
+'use strict';
+
 import { QueryClientWrapper } from '@/__mocks__/queryClientMock';
-import { act } from '@testing-library/react';
 import {
   createSaveSearchMockFn,
   useAuthenticatedUser,
@@ -24,9 +25,9 @@ afterEach(() => {
 describe('Request Military Transcript AI Page', () => {
   it('should render the page', () => {
       useAuthenticatedUser();
-      const { getByText, getByPlaceholderText, getByTestId } = renderer();
+      const { getByText, getByPlaceholderText, getByTestId, getByRole } = renderer();
       
-      expect(getByText('Welcome Emma Hobert!')).toBeInTheDocument();
+      expect(getByText('Welcome !')).toBeInTheDocument();
 
       fireEvent.click(getByText('Search'));
 
@@ -45,15 +46,40 @@ describe('Request Military Transcript AI Page', () => {
       fireEvent.change(getByPlaceholderText('Last Name'), {
         target: { value: 'Doe' },
       });
-      fireEvent.change(getByPlaceholderText("MM/DD/YYYY"), {
-        target: { value: '01/01/1990' },
-      });
-      fireEvent.change(getByPlaceholderText('####'), {
+
+      // fireEvent.change(getByPlaceholderText("MM/DD/YYYY"), {
+      //   target: { value: '01/01/1990' },
+      // });
+      fireEvent.change(getByPlaceholderText('#########'), {
         target: { value: '1111' },
       });
 
       fireEvent.click(getByTestId('requestTranscriptButton'))
+
+    
+      expect(getByText('Confirm by clicking the checkbox that you have been granted the necessary permissions by service member before proceeding.')).toBeInTheDocument();
+
+
+      fireEvent.click(getByTestId('requestmilitaryTranscript'))
+
+
+      fireEvent.click(getByRole('checkbox'))
+
+      fireEvent.click(getByTestId('requestTranscriptButton'))
+
+      expect(getByText('Fill out the required Social Security Number. It has be to exactly 9 digits with no spaces and no letters.')).toBeInTheDocument();
+
+
+      fireEvent.change(getByPlaceholderText('#########'), {
+        target: { value: '111111111' },
+      });
+
+      fireEvent.click(getByTestId('requestTranscriptButton'))
+
       expect(getByText('Your transcript request have been successfully delivered!')).toBeInTheDocument();
+
       
   });
+
+
 });

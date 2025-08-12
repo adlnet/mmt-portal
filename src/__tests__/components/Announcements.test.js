@@ -1,7 +1,9 @@
+'use strict';
+
 import { QueryClientWrapper } from '@/__mocks__/queryClientMock';
 import { fireEvent, render } from '@testing-library/react';
-import Button from '@/components/Button';
 import Announcements from '@/components/Announcements';
+import Button from '@/components/Button';
 import announcementsData from '@/__mocks__/data/announcements.data';
 
 const renderer = () => {
@@ -27,6 +29,7 @@ describe ('Button component test', () => {
 
         const screen = renderer();
         fireEvent.click(screen.getByTestId('testId'))
+        fireEvent.click(screen.getByTestId("xButton"))
         expect(testMock).toHaveBeenCalledTimes(0);
 
     })

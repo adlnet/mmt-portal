@@ -1,5 +1,7 @@
+'use strict';
+
 import { QueryClientWrapper } from '@/__mocks__/queryClientMock';
-import { act, render, fireEvent } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import InputField from '@/components/InputField';
 
 const renderer = () => {
@@ -23,6 +25,7 @@ describe ('InputField component test', () => {
             });
             fireEvent.submit(screen.getByPlaceholderText('Input Field'));
           });
+
         //   expect(console.log).toHaveBeenCalledTimes(1);
 
     })  

@@ -1,8 +1,7 @@
+'use strict';
+
 import {ChevronDownIcon} from '@heroicons/react/solid';
 import { Disclosure, Transition } from '@headlessui/react';
-
-// import { twMerge } from "tailwind-merge";
-
 
 export default function Accordion({ title, content }) {
 

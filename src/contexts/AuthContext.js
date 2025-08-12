@@ -1,3 +1,5 @@
+'use strict';
+
 import { axiosInstance } from '@/config/axiosConfig';
 import { backendHost } from '../config/endpoints';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -32,7 +34,7 @@ export function AuthProvider({ children }) {
       .post(`${backendHost}/api/auth/logout`)
       .then((res) => removeLocal())
       .catch((err) => {
-        console.log(err);
+        console.log("Logout failed.");
       })
       .finally(() => {
         removeLocal();
@@ -43,7 +45,7 @@ export function AuthProvider({ children }) {
   const checkUserLoggedIn = async () => {
     if (typeof window !== 'undefined') {
       axiosInstance
-        .get(`${backendHost}/api/auth/validate`)
+        .get(`${backendHost}/auth/validate`)
         .then((res) => {
           setLocal(res.data);
         })

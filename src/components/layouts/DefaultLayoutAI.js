@@ -1,3 +1,5 @@
+'use strict';
+
 import AcademicInstituteSideNav from '../AISideNav';
 
 export default function DefaultLayoutAI({ children, footerLocation }) {
