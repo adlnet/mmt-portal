@@ -10,7 +10,7 @@ import Image from 'next/image';
 export default function Docs() {
   return (
     <DefaultLayout>
-      <div className="bg-white rounded-md pb-8"> 
+      <div className="bg-white rounded-md"> 
       
       <div className='mt-10 pb-8 p-5'>
         <h1 className='mb-2 text-2xl font-semibold'>Help Center</h1>
