@@ -115,7 +115,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className='bg-white border rounded-md border-gray-200 p-4 shadow-lg focus:shadow-lg px-5 my-8 mr-4'>
+          <div className='bg-white border rounded-md border-gray-200 p-4 shadow-lg focus:shadow-lg px-5 my-8'>
             <h1 className='flex text-xl font-semibold h-6 mb-2'>
             What is Modernized Military Transcript (MMT)?
             </h1>
@@ -147,7 +147,7 @@ export default function Home() {
             }
           </div>
 
-          <div className='bg-white border rounded-md border-gray-200 p-4 shadow-lg focus:shadow-lg px-5mr-4 mb-8'>
+          <div className='bg-white border rounded-md border-gray-200 p-4 shadow-lg focus:shadow-lg px-5 mb-8'>
             <h1 className='flex text-xl font-semibold h-6 mb-3'>
               My Updates
             </h1>
