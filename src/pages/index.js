@@ -34,11 +34,11 @@ export default function Home() {
 
   const transcriptId = transcriptData?.[0]?.id ?? null;
 
+  // Mockdata for now, will be replaced with real data later
   const data = [
-    {date:"January 30, 2025", time: "12:44 PM EST", announcement: "ARMY, NAVY, MARINE CORPS, SPACE FORCE: All veterans, active duty, National Guard Personnel should use the Joint Services Transcript (JST).", type: "dismiss"},
-    {date:"July 23, 2025", time: "9:00 AM EST", announcement: "This tool is currently being piloted to select service members for the US Coast Guard. If you're accessing the MMT from another Service, you may not see any records — this is expected throughout the duration of the pilot effort. We appreciate your understanding as we continue to expand access.", type: "dismiss"}
+    {date:"January 30, 2025", time: "12:44 PM EST", announcement: "ARMY, NAVY, MARINE CORPS, SPACE FORCE: All veterans, active duty, National Guard Personnel should use the Joint Services Transcript (JST).", type: "dismiss"}
   ];
-  
+
   const [mockData] = useState(data);
 
   const handleTranscript = transcriptAction => {
