@@ -1,14 +1,10 @@
+'use strict';
+
 import {ChevronDownIcon} from '@heroicons/react/solid';
 import { Disclosure, Transition } from '@headlessui/react';
 
-// import { twMerge } from "tailwind-merge";
+export default function Accordion({ title, content }) {
 
-
-export default function Accordion({ title, content, className }) {
-
-    // const classes = twMerge(`flex items-center rounded-lg justify-between text-left w-full p-5 font-medium border border-gray-300 hover:opacity-90 hover:shadow 
-    //     ${className ?? ""}
-    // `);
     return (
         <Disclosure>
         {({ open }) => (

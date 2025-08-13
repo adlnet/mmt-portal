@@ -1,14 +1,8 @@
-import { useRouter } from "next/router"
-import Image from 'next/image';
-import cardImage from '@/public/card-header.png'
-
+'use strict';
+import { getTranscriptStatusColor } from '@/utils/getTranscriptStatusColor';
 
 export default function MyUpdatesSections({ title, description, icon, badgelabel, sentDate, date }){
-    const router = useRouter();
-    const handleClick=(e)=>{
-        e.preventDefault();
-        router.push(route)
-    }
+
     return(
         <div>
             <div className='flex flex-row'>
@@ -19,7 +13,7 @@ export default function MyUpdatesSections({ title, description, icon, badgelabel
 
               <div className='flex flex-col pl-3'>
                 <div className='flex flex-row'>
-                  {badgelabel? <div className='p-1 px-3 mr-2 font-bold text-sm rounded bg-green-200 bg-opacity-50'>{badgelabel} </div> : <></>}
+                  {badgelabel? <div className={`p-1 px-3 mr-2 font-bold text-sm rounded ${getTranscriptStatusColor(badgelabel)} bg-opacity-50`}>{badgelabel} </div> : <></>}
                   <div className='pt-0.5 text-gray-400 text-sm'> {sentDate}</div> 
                 </div>
 

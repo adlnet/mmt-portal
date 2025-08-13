@@ -1,204 +1,230 @@
 "use client";
+'use strict';
 
-import { axiosxapiInstance } from "@/config/axiosConfig";
-import { xapiUsers } from "@/config/endpoints";
-import { Checkbox, Label, Progress } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { Dropdown, DropdownItem } from 'flowbite-react';
+import { getTranscriptStatusColor } from '@/utils/getTranscriptStatusColor';
+import { useDeleteTranscriptStatus } from '@/hooks/useDeleteTranscriptStatus';
+import { useEffect, useMemo, useState } from 'react';
+import { useTableSearch } from '@/hooks/useTableSearch';
+import { useTranscriptStatus } from '@/hooks/useTranscriptStatus';
+import Pagination from "./Pagination";
+import SearchBar from '@/components/SearchBar';
+import useField  from '@/hooks/useField';
 
-export var users = [];
+export const users = [];
 
 export function TranscriptTrackingTable() {
 
-    // const [talentData, setTalentData] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage] = useState(10);
+    const [transcriptStatusFilters, setTranscriptStatusFilters] = useState({
+    status: '',
+    branch: '',
+    recent: false
+    });
+    const { data, isLoading } = useTranscriptStatus(transcriptStatusFilters);
 
-    const data = [
-        {requestedBy: 'Institution', sentTo: "Purdue University School of Aeronautics and Astronautics", sendDate: "29 MAR 2024, 22:00:00 ", status: "Downloaded", downloadDate: "30 MAR 2024, 9:00:00", downloadBy: "Registrar", action: "Cancel"},
-        {requestedBy: 'Self', sentTo: "Bunker Hill Community College", sendDate: "6 SEP 2006, 10:00:00", status: "Downloaded", downloadDate: "7 SEP 2006, 8:00:00", downloadBy: "Military Enrollment Technician", action: "Cancel"},
-        
-    ];
+    // Get all filter options
+    const { data:allDataForDropdownOptions } = useTranscriptStatus({});
 
-    // useEffect(() => {
-    //     axiosxapiInstance
-    //     .get(xapiUsers)
-    //     .then((res) => {
-    //         setTalentData(res.data);
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    // }, []);
-    
+    const { handleSearch, filteredData, setFilteredData } = useTableSearch(data);
 
-    function updateUsers(event) {
-        var index = users.indexOf(event.target.name)
-        if (index >= 0){
-            users.splice(index,1);
-        }else{
-            users.push(event.target.name);
+    useEffect(() => {
+        if (data) {
+            setFilteredData(data);
         }
-    }
+    }, [data, setFilteredData]);
+
+    const { fields, updateKeyValuePair, resetKey } = useField({
+        keyword: '',
+        p: 1,
+      });
+
+    const handleChange = (event) => {
+        updateKeyValuePair(event.target.name, event.target.value);
+    };
+
+    const handleSearchReset = () => {
+        resetKey('keyword');
+        handleSearch('', data || []);
+    };
+
+    // Dynamically update the filter options when the user selects a filter option
+    const handleFiltersChange = (filterOptionKey, filterOptionVal) => {
+        setTranscriptStatusFilters(prev => ({
+        ...prev,
+        [filterOptionKey]: filterOptionVal
+        }));
+    };
+
+    // Get current posts
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = filteredData?.slice(indexOfFirstPost, indexOfLastPost);
+
+        // Change page
+    const paginateFront = () => setCurrentPage(currentPage + 1);
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const paginateBack = () => setCurrentPage(currentPage - 1);
+
+    // Get unique options here
+    const statusOptions = useMemo(() => {
+        if (!allDataForDropdownOptions) return [];
+        
+        const allStatuses = allDataForDropdownOptions.map(transcriptStatus => transcriptStatus?.status);
+        return [...new Set(allStatuses)];
+    }, [allDataForDropdownOptions]);
 
   return (
     <>
-    <div class="mx-auto max-w-screen-xl">
+    <div className="mx-auto max-w-screen-xl">
         {/* <!-- Start coding here --> */}
-        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden mb-8">
-            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                <div class="w-full md:w-1/2">
-                    <form class="flex items-center">
-                        <label for="simple-search" class="sr-only">Search</label>
-                        <div class="relative w-full">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <input type="text" id="simple-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search" required=""/>
-                        </div>
-                    </form>
+        <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden mb-8">
+            <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:-space-y-4 md:space-x-4 p-4">
+            <div className='flex items-center gap-4'>
+             <div className="flex-grow w-[22rem] xl:w-[34rem]">
+                    <SearchBar
+                        parameters={fields}
+                        onReset={handleSearchReset}
+                        onClick={() => {
+                            handleSearch(fields.keyword, data || [])
+                            setCurrentPage(1);
+                        }}
+                        onChange={handleChange}
+                    />
                 </div>
-                <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                    <div class="flex items-center space-x-3 w-full md:w-auto">
-                        <div className="p-0.5 mb-2 overflow-hidden font-medium rounded-lg bg-gradient-to-r from-purple to-blue-custom from-accent-blue to-purple">                        
-                            <button id="actionsDropdownButton" data-dropdown-toggle="actionsDropdown" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
-                                <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path clip-rule="evenodd" fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                </svg>
+            </div>
+                <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                    <div className="flex items-center pt-6 space-x-3 w-full md:w-auto">
+                        {/* <div className="p-0.5 mb-2 overflow-hidden font-medium rounded-lg bg-gradient-to-r from-purple to-blue-custom from-accent-blue to-purple">                        
+                            <button data-testid='actions-filter' id="actionsDropdownButton" title={"This functionality is not yet developed."} data-dropdown-toggle="actionsDropdown" className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
                                 Actions
+                                <svg className="-ml-1 ml-1.5 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path clipRule="evenodd" fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                </svg>
                             </button>
-                        </div>
+                        </div> */}
 
-                        <div id="actionsDropdown" class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
-                            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="actionsDropdownButton">
+                        <div id="actionsDropdown" className="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                            <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="actionsDropdownButton">
                                 <li>
-                                    <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Mass Edit</a>
+                                    <a rel="noopener noreferrer"href="/#" className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Mass Edit</a>
                                 </li>
                             </ul>
-                            <div class="py-1">
-                                <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete all</a>
+                            <div className="py-1">
+                                <a rel="noopener noreferrer"href="/#" className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete all</a>
                             </div>
                         </div>
-                        <div className="p-0.5 mb-2 overflow-hidden font-medium rounded-lg bg-gradient-to-r from-purple to-blue-custom from-accent-blue to-purple">                        
-                            <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
-                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-4 w-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                        <div className="p-0.5 mb-2 overflow-hidden text-black font-medium rounded-lg bg-gradient-to-r from-purple to-blue-custom from-accent-blue to-purple cursor-pointer">                        
+                            <Dropdown data-testid='recent-filetr' label='recent-filter' renderTrigger={() => ( <div className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" >
+                                {transcriptStatusFilters?.recent ? 'Last 30 Days' : 'Recent'}
+                                <svg className=" -mr-1 ml-1.5 xl:h-5 xl:w-5 lg:w-8 lg:h-8 md:h-10 md:w-5 " fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path clipRule="evenodd" fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                                 </svg>
-                                Filter
-                                <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path clip-rule="evenodd" fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                </svg>
-                            </button>
+                            </div>)} >
+                                <DropdownItem onClick={() => handleFiltersChange('recent', null)}>All</DropdownItem>
+                                <DropdownItem onClick={() => handleFiltersChange('recent', true)}>Last 30 Days</DropdownItem>
+                            </Dropdown>
                         </div>
-                        <div id="filterDropdown" class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                            <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Choose brand</h6>
-                            <ul class="space-y-2 text-sm" aria-labelledby="filterDropdownButton">
-                                <li class="flex items-center">
-                                    <input id="apple" type="checkbox" value="" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                    <label for="apple" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Apple (56)</label>
-                                </li>
-                                <li class="flex items-center">
-                                    <input id="fitbit" type="checkbox" value="" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                    <label for="fitbit" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Microsoft (16)</label>
-                                </li>
-                                <li class="flex items-center">
-                                    <input id="razor" type="checkbox" value="" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                    <label for="razor" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Razor (49)</label>
-                                </li>
-                                <li class="flex items-center">
-                                    <input id="nikon" type="checkbox" value="" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                    <label for="nikon" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Nikon (12)</label>
-                                </li>
-                                <li class="flex items-center">
-                                    <input id="benq" type="checkbox" value="" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
-                                    <label for="benq" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">BenQ (74)</label>
-                                </li>
-                            </ul>
+                        <div className="p-0.5 mb-2 overflow-hidden text-black font-medium rounded-lg bg-gradient-to-r from-purple to-blue-custom from-accent-blue to-purple cursor-pointer">                        
+                            <Dropdown label='status-filter' renderTrigger={() => ( <div data-testid="status-dropdown" className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                {transcriptStatusFilters?.status || 'Status'}
+                                <svg className=" -mr-1 ml-1.5 2xl:h-5 xl:h-7 xl:w-5 lg:w-9 lg:h-8 md:h-10 md:w-10" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path clipRule="evenodd" fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                </svg>
+                            </div>)} >
+                                <DropdownItem onClick={() => handleFiltersChange('status', null)}>All</DropdownItem>
+                                {statusOptions.map((status, i) => (
+                                    <DropdownItem
+                                        data-testid={`dropdown-item-${status}`}
+                                        key={status}
+                                        onClick={() => handleFiltersChange('status', status)}
+                                    >
+                                        {status}
+                                    </DropdownItem>
+                                ))}
+                            </Dropdown>
+                        </div>
+                        <div className="p-0.5 mb-2 overflow-hidden font-medium rounded-lg">
+                                <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown" className="w-full md:w-auto flex items-center justify-center py-2 px-4 font-medium text-purple ring-white outline-white focus:outline-none bg-white rounded-lg hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400  dark:hover:text-white dark:hover:bg-gray-700"        onClick={() => {
+                                    handleFiltersChange('status', null);
+                                    handleFiltersChange('branch', null);
+                                    handleFiltersChange('recent', false);
+                                }}>
+                                    Clear Filter
+                                </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="px-4 py-3">Requested By</th>
-                            <th scope="col" class="px-4 py-3">Send To</th>
-                            <th scope="col" class="px-4 py-3">Send Date</th>
-                            <th scope="col" class="px-4 py-3">Status</th>
-                            <th scope="col" class="px-4 py-3">Download Date</th>
-                            <th scope="col" class="px-4 py-3">Downloaded By</th>
-                            <th scope="col" class="px-4 py-3">Action</th>
+                            <th scope="col" className="px-4 py-3">Action By</th>
+                            <th scope="col" className="px-4 py-3">Transcript Recipient</th>
+                            <th scope="col" className="px-4 py-3">Date Initiated</th>
+                            <th scope="col" className="px-4 py-3">Status</th>
+                            <th scope="col" className="px-4 py-3">Action Date</th>
+                            <th scope="col" className="px-4 py-3">Action By</th>
+                            {/* <th scope="col" className="px-4 py-3">Action</th> */}
 
-                            <th scope="col" class="px-4 py-3">
-                                <span class="sr-only">Actions</span>
-                            </th>
+                            {/* <th scope="col" className="px-4 py-3">
+                                <span className="sr-only">Actions</span>
+                            </th> */}
                         </tr>
                     </thead>
                     <tbody> 
-                        {data.map((data, index) => {
-                            return (
-                                <tr class="border-b dark:border-gray-700" key={data.sentTo}>
-                                    <td class="px-4 py-3">{data.requestedBy}</td>
-                                    <td class="px-4 py-3">{data.sentTo}</td>
-                                    <td class="px-4 py-3">{data.sendDate}</td>
-                                    <td class="px-4 my-3"> 
-                                        <div className="bg-green-200 rounded p-1 font-semibold">
-                                            {data.status}
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">{data.downloadDate}</td>
-                                    <td class="px-4 py-3">{data.downloadBy}</td>
-                                    <td class="px-4 py-3">{data.action}</td>
-                                </tr>
-                            )
-                        })}
 
+                        {isLoading ? <p>Loading...</p> : <PostList posts={currentPosts} />}
                     </tbody>
                 </table>
             </div>
-            <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
-                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Showing
-                    <span class="font-semibold text-gray-900 dark:text-white"> 1-10 </span>
-                    of
-                    <span class="font-semibold text-gray-900 dark:text-white"> 6</span>
-                </span>
-                <ul class="inline-flex items-stretch -space-x-px">
-                    <li>
-                        <a href="#" class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                            <span class="sr-only">Previous</span>
-                            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" aria-current="page" class="flex items-center justify-center text-sm z-10 py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">1</a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">3</a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">...</a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">6</a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                            <span class="sr-only">Next</span>
-                            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+            <div className="m-4">
+                <Pagination
+                    postsPerPage={postsPerPage}
+                    totalPosts={filteredData?.length}
+                    paginateBack={paginateBack}
+                    paginate={paginate}
+                    paginateFront={paginateFront}
+                    currentPage={currentPage}
+                />
+            </div>
         </div>
     </div>
     </>
   );
 }
+
+const PostList = ({ posts }) => {
+   
+    const { mutate:deleteTranscriptStatus } = useDeleteTranscriptStatus();
+
+    return(
+        <>
+            {posts?.map((data, index) => (
+                    <tr className="border-b dark:border-gray-700" key={data?.created}>
+                        <td className="px-4 py-3 text-slate-900">{data?.requestedBy || 'Self'}</td>
+                        <td className="px-4 py-3 text-slate-900">{data?.academic_institute || 'N/A'}</td>
+                        <td className="px-4 py-3">{new Date(data?.created).toLocaleString() || 'N/A'}</td>
+                        <td className="px-4 my-3"> 
+                            <div className={`text-center ${getTranscriptStatusColor(data?.status)} rounded-md p-1 font-semibold`}>
+                                {data?.status || 'N/A'}
+                            </div>
+                        </td>
+                        <td className="px-4 py-3">{data?.status === 'Downloaded' ? new Date(data?.modified).toLocaleString() : 'N/A'}</td>
+                        <td className="px-4 py-3 text-slate-900">{data?.status === 'Downloaded' ? data?.academic_institute : 'N/A'}</td>
+                        {/* <td className="px-4 py-3">
+                            <button 
+                                disabled={data?.status === 'Downloaded'}
+                                className='text-purple whitespace-nowrap hover:text-blue-700 hover:underline disabled:text-[#D6D2DB] disabled:no-underline disabled:hover:text-[#D6D2DB]'
+                                onClick={() => deleteTranscriptStatus(data?.pk)}
+                            >
+                                Cancel
+                            </button>
+                        </td> */}
+                    </tr>
+            ))}
+        </>
+    )
+};
