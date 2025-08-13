@@ -1,3 +1,5 @@
+'use strict';
+
 import { QueryClientWrapper } from '@/__mocks__/queryClientMock';
 import { render } from '@testing-library/react';
 import Button from '@/components/Button';
@@ -5,7 +7,9 @@ import Button from '@/components/Button';
 const renderer = () => {
     return render(
       <QueryClientWrapper>
-        <Button onClick={null} id='id1' children='test' />
+        <Button onClick={null} id='id1'>
+          test
+        </Button>
       </QueryClientWrapper>
     );
 };

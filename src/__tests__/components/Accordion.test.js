@@ -1,6 +1,10 @@
+'use strict';
+
+import '@testing-library/jest-dom'; 
 import { QueryClientWrapper } from '@/__mocks__/queryClientMock';
 import { fireEvent, render } from '@testing-library/react';
 import Accordion from '@/components/Accordion';
+
 
 const renderer = () => {
     return render(
@@ -13,7 +17,7 @@ const renderer = () => {
 describe ('Accordion component test', () => {
     it ('show that an accordion can render', () =>{
         const screen = renderer();
-        expect(screen.getByText('Accordion Title'))
+        expect(screen.getByText('Accordion Title')).toBeInTheDocument();
         fireEvent.click(screen.getByText('Accordion Title'))
         fireEvent.click(screen.getByText('Accordion Title'))
     })  

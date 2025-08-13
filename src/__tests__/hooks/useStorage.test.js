@@ -1,5 +1,9 @@
+'use strict';
+
+import { act, renderHook } from '@testing-library/react';
 import { useLocalStorage, useSessionStorage } from '@/hooks/useStorage';
-import { renderHook, act } from '@testing-library/react';
+
+jest.unmock('@/hooks/useStorage');
 
 describe('useStorage', () => {
   beforeEach(() => {

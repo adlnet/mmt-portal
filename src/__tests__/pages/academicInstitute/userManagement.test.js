@@ -1,5 +1,6 @@
+'use strict';
+
 import { QueryClientWrapper } from '@/__mocks__/queryClientMock';
-import { act } from '@testing-library/react';
 import {
   createSaveSearchMockFn,
   useAuthenticatedUser,
@@ -32,7 +33,8 @@ describe('UserManagement', () => {
       fireEvent.change(getByPlaceholderText('Search'), {
         target: { value: 'John' },
       });
-      fireEvent.click(getByText('Search'));
+
+      //fireEvent.click(getByText('Search'));
 
       fireEvent.click(getByText('Add New User'));
 

@@ -1,5 +1,7 @@
-import SearchBar from '@/components/SearchBar';
+'use strict';
+
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import SearchBar from '@/components/SearchBar';
 
 describe('SearchBar', () => {
   it('should render', () => {
@@ -57,9 +59,10 @@ describe('SearchBar', () => {
   it('should not execute on click, on any other key', () => {
     render(
       <SearchBar
-        parameters={{ keyword: 'test' }}
+        parameters={{ keyword: 'test?' }}
         onClick={() => console.log('tada')}
         onChange={() => {}}
+        onReset={() => {}}
       />
     );
 
@@ -67,9 +70,10 @@ describe('SearchBar', () => {
       target: { value: '?' },
     });
 
-    act(() => {
-      fireEvent.keyPress(screen.getByPlaceholderText('Search'), {});
-    });
+    fireEvent.keyPress(screen.getByPlaceholderText('Search'), { key: 'Enter', keyCode: 13 });
+    
+    fireEvent.click(screen.getByTestId('reset-button'));
+
   });
 
 });

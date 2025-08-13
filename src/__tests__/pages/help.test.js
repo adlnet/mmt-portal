@@ -2,9 +2,9 @@
 
 import '@testing-library/jest-dom'
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { useAuthenticatedUser, useMockConfig } from '@/__mocks__/predefinedMocks';
-import Docs from '@/pages/help';
+import Docs from '@/pages/helpCenter';
 
 const queryClient = new QueryClient();
 const renderer = () => {
@@ -15,11 +15,22 @@ const renderer = () => {
   );
 };
 
-describe('Help Page', () => {
+describe('Help Center Page', () => {
   it('should render the page', () => {
     useAuthenticatedUser();
+    const { getAllByText } = renderer();
+    expect(getAllByText('Help Center').length).toBe(2);
+
+  });
+
+  it('should click the buttons', () => {
+    useAuthenticatedUser();
     const { getByText } = renderer();
-    expect(getByText('Help Center')).toBeInTheDocument();
+
+    fireEvent.click(getByText('Submit a Request'));
+    
+    // fireEvent.click(getByText('View FAQs'));
+
 
   });
 });

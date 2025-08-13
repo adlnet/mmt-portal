@@ -1,3 +1,5 @@
+'use strict';
+
 import { QueryClientWrapper } from '@/__mocks__/queryClientMock';
 import { render } from '@testing-library/react';
 import GraySecondaryButton from '@/components/GraySecondaryButton';

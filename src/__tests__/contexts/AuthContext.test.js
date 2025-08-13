@@ -2,15 +2,17 @@
 
 import '@testing-library/jest-dom'
 import { AuthContext, AuthProvider, useAuth } from '@/contexts/AuthContext';
-import { render, screen } from '@testing-library/react';
 import { act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 // import mockAxios from 'jest-mock-axios';
 
 jest.unmock('@/contexts/AuthContext');
+jest.unmock('@/hooks/useStorage');
 
 // mock axios
 jest.mock('axios');
+
 // afterEach(() => {
 //   // cleaning up the mess left behind the previous test
 //   mockAxios.reset();

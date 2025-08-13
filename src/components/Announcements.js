@@ -1,14 +1,13 @@
+'use strict';
+
 import {ChevronDownIcon, SpeakerphoneIcon} from '@heroicons/react/solid';
 import { Disclosure, Transition } from '@headlessui/react';
 import { useState } from 'react';
 
-
 export default function Announcements({ content, className }) {
 
     const [isOpen, setIsOpen] = useState(true);
-    const [counter, setCounter] = useState(content.length);
-
-
+    const [counter, setCounter] = useState(content.length + 1);
 
     const handleClick=(e)=>{
         setIsOpen(false)
@@ -52,8 +51,8 @@ export default function Announcements({ content, className }) {
                                                     {data.date} at {data.time}
                                                 </div>
                                                 <div className="">
-                                                    <button data-collapse-toggle="banner" type="button" onClick={handleClick} className="text-gray-400 hover:bg-gray-200 hover:text-black-900 rounded-lg text-sm pt-1 dark:hover:bg-gray-600 dark:hover:text-white" >
-                                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" ><path fill-rule="evenodd" data-testid="testId" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
+                                                    <button data-collapse-toggle="banner" data-testid="xButton" type="button" onClick={handleClick} className="text-gray-400 hover:bg-gray-200 hover:text-black-900 rounded-lg text-sm pt-1 dark:hover:bg-gray-600 dark:hover:text-white" >
+                                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" ><path fillRule="evenodd" data-testid="testId" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>  
                                                     </button>
                                                 </div>
                                             </div>
