@@ -3,7 +3,6 @@
 
 import { Dropdown, DropdownItem } from 'flowbite-react';
 import { getTranscriptStatusColor } from '@/utils/getTranscriptStatusColor';
-import { useDeleteTranscriptStatus } from '@/hooks/useDeleteTranscriptStatus';
 import { useEffect, useMemo, useState } from 'react';
 import { useTableSearch } from '@/hooks/useTableSearch';
 import { useTranscriptStatus } from '@/hooks/useTranscriptStatus';
@@ -198,8 +197,6 @@ export function TranscriptTrackingTable() {
 
 const PostList = ({ posts }) => {
    
-    const { mutate:deleteTranscriptStatus } = useDeleteTranscriptStatus();
-
     return(
         <>
             {posts?.map((data, index) => (
