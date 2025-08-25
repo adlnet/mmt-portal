@@ -145,7 +145,7 @@ export default function ModernMilitaryTranscriptAIPage() {
               <Modal.Body>
                 <div className="space-y-6 py-3">
                   <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                  Insert the first and last name, date of birth, and the last 4 digits of the Service Member’s SSN to request their transcript. 
+                  Insert the first and last name, date of birth, and the 9 digit SSN of the Service Member to request their transcript. 
                   </p>
                   <p className="text-base leading-relaxed text-red-500 dark:text-gray-400">
                       * = Required   

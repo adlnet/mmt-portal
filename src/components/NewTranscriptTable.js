@@ -28,6 +28,8 @@ export function NewTranscriptTable({ data, onFiltersChange, transcriptStatusFilt
     // Get all filter options
     const { data:allDataForDropdownOptions } = useTranscriptStatus({});
 
+    console.log(allDataForDropdownOptions)
+
     useEffect(() => {
             const fetchPosts = async () => {
                 setLoading(true);
@@ -55,7 +57,7 @@ export function NewTranscriptTable({ data, onFiltersChange, transcriptStatusFilt
             'Last Name': transcriptStatus.transcript.last_name,
             'DOB': transcriptStatus.transcript.dob,
             'Status': transcriptStatus.status,
-            'Branch': transcriptStatus?.branch || 'Air Force', // Placeholder, dont have the branch info yet
+            'Branch': transcriptStatus?.branch || 'N/A', // Placeholder, dont have the branch info yet
             'Received On': transcriptStatus.created,
             'Download On': data?.status === 'Opened' ? 'N/A' : data?.modified,
             'Requested By': transcriptStatus.academic_institute,
@@ -279,7 +281,6 @@ const PostList = ({ posts, handleChange, selectedRows }) => {
                 <tr className="border-b dark:border-gray-700" key={data.sentTo}>
                     <li className="flex mt-3 justify-center">
                         <input id="chkbx" type="checkbox" value=""  checked={selectedRows.includes(data.pk)} onChange={(event) => handleChange(event, data.pk)} className="px-2 py-2 h-4 w-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-
                     </li>
                     <td className="px-4 py-3">{data.transcript.first_name}</td>
                     <td className="px-4 py-3">{data.transcript.last_name}</td>
@@ -289,13 +290,13 @@ const PostList = ({ posts, handleChange, selectedRows }) => {
                             {data.status}
                         </div>
                     </td>
-                    <td className="px-4 py-3">Air Force</td>
+                    <td className="px-4 py-3">{data.transcript.branch}</td> 
                     <td className="px-4 py-3">{new Date(data?.created).toLocaleString()}</td>
                     <td className="px-4 py-3">{data?.status === 'Delivered' || data?.status === 'Pending' ? 'N/A' : new Date(data?.modified).toLocaleString()}</td>
                     {/* <td className="px-4 py-3">{data.downloadBy}</td> */}
                     <td className="px-4 py-3">{data.academic_institute}</td>
                 </tr>
-        ))}
+            ))}
         </>
     )
 };
