@@ -1,13 +1,13 @@
 'use strict';
-import { Badge, Checkbox, Dropdown, Label, Modal, Radio, Tabs } from "flowbite-react";
+import { Checkbox, Label } from "flowbite-react";
 import { CheckCircleIcon, XCircleIcon, XIcon } from '@heroicons/react/solid';
 import { TrashIcon } from '@heroicons/react/outline';
-import { academicInstitute, academicInstituteUsers, transcriptStatus } from '@/config/endpoints';
+import { academicInstituteUsers, transcriptStatus } from '@/config/endpoints';
 import { axiosInstance } from '@/config/axiosConfig';
 import Button from '@/components/Button';
 import DefaultLayoutAI from "@/components/layouts/DefaultLayoutAI";
 import InputField from '@/components/InputField';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function RequestTranscript() {
 
@@ -231,7 +231,6 @@ export default function RequestTranscript() {
 
           <Button className="w-full" onClick={async () =>
             {
-              console.log("Submit Pressed")
               let acceptPermissionsBox = document.getElementById("accept");
               
               if(acceptPermissionsBox.checked){
