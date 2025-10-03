@@ -188,7 +188,7 @@ export default function UserManagement() {
                     }
 
                     // API Call 
-                    axiosInstance.patch(academicInstituteUsers+`${users?.id}`, 
+                    axiosInstance.patch(academicInstituteUsers+`${users?.id}/`, 
                     {"members":
                       [{
                         "email": email,
