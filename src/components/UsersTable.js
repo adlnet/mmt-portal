@@ -9,11 +9,12 @@ import axios from "axios";
 
 
 export const users = [];
-export function UsersTable({ data, currentPage, setCurrentPage }) {
+export function UsersTable({ data, currentPage, setCurrentPage, onDeleteUser }) {
 
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [postsPerPage] = useState(10);
+    const [selectedUsers, setSelectedUsers] = useState([]);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -35,37 +36,30 @@ export function UsersTable({ data, currentPage, setCurrentPage }) {
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = posts?.slice(indexOfFirstPost, indexOfLastPost);
 
-        // Change page
+    // Change page
     const paginateFront = () => setCurrentPage(currentPage + 1);
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
     const paginateBack = () => setCurrentPage(currentPage - 1);
 
-    const userData = [
-        { firstName: 'Linh', lastName: "Tran", email: "linh.tran@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Administrator" },
-        { firstName: 'Alex', lastName: "Flavio", email: "alex.flavio@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Database Admin" },
-        { firstName: 'Mark', lastName: "Nguyen", email: "mark.nguyen@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Manager" },
-        { firstName: 'Themba', lastName: "Eurja", email: "themba.eurja@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Team Member"},
-        { firstName: 'Anastasia', lastName: "Nguyen", email: "anastasia.nguyen@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Team Member"},
-        { firstName: 'Uty', lastName: "Coogan", email: "uty.coogan@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Administrator"},
-        { firstName: 'Olongo', lastName: "Shernick", email: "olongo.shernick@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Database Admin" },
-        { firstName: 'Jeffery', lastName: "Snowman", email: "jeffery.snowman@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Team Member"},
-        { firstName: 'Leon', lastName: "Becker", email: "leon.becker@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Administrator"},
-        { firstName: 'Ember', lastName: "Muzuyka", email: "ember.muzuyka@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Team Member"},
-        { firstName: 'Linh', lastName: "Tran", email: "linh.tran@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Administrator" },
-        { firstName: 'Alex', lastName: "Flavio", email: "alex.flavio@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Database Admin" },
-        { firstName: 'Mark', lastName: "Nguyen", email: "mark.nguyen@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Manager" },
-        { firstName: 'Themba', lastName: "Eurja", email: "themba.eurja@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Team Member"},
-        { firstName: 'Anastasia', lastName: "Nguyen", email: "anastasia.nguyen@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Team Member"},
-        { firstName: 'Uty', lastName: "Coogan", email: "uty.coogan@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Administrator"},
-        { firstName: 'Olongo', lastName: "Shernick", email: "olongo.shernick@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Database Admin" },
-        { firstName: 'Jeffery', lastName: "Snowman", email: "jeffery.snowman@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Team Member"},
-        { firstName: 'Leon', lastName: "Becker", email: "leon.becker@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Administrator"},
-        { firstName: 'Ember', lastName: "Muzuyka", email: "ember.muzuyka@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Team Member"}, { firstName: 'Linh', lastName: "Tran", email: "linh.tran@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Administrator" },
-        { firstName: 'Alex', lastName: "Flavio", email: "alex.flavio@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Database Admin" },
-        { firstName: 'Mark', lastName: "Nguyen", email: "mark.nguyen@mmt.edu", dateAdded: "December 2, 2024 1:45 PM", role: "Manager" },
+    // Handle checkbox selection
+    const handleUserSelect = (user, isChecked) => {
+        if (isChecked) {
+            setSelectedUsers(prev => [...prev, user]);
+        } else {
+            setSelectedUsers(prev => prev.filter(u => u.email !== user.email));
+        }
+    };
     
-    ];
-    
+    // Handle delete selected users
+    const handleDeleteSelected = () => {
+        selectedUsers.forEach(user => {
+            onDeleteUser && onDeleteUser(user);
+        });
+
+        // Clear after deletion
+        setSelectedUsers([]);
+    };
+
     return (
         <>
             <div className="mx-auto max-w-screen-xl">
@@ -83,7 +77,7 @@ export function UsersTable({ data, currentPage, setCurrentPage }) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {loading ? <p>Loading...</p> : <PostList posts={currentPosts} />}
+                                {loading ? <p>Loading...</p> : <PostList posts={currentPosts} selectedUsers={selectedUsers} onUserSelect={handleUserSelect} />}
                             </tbody>
                         </table>
                     </div>
@@ -100,28 +94,32 @@ export function UsersTable({ data, currentPage, setCurrentPage }) {
                 </div>
                 <div className="flex justify-end gap-5">
                     <GraySecondaryButton buttonLabel={"Save"} />
-                    <GraySecondaryButton buttonLabel={"Delete"} />
+                    <GraySecondaryButton buttonLabel={"Delete"} handleClick={handleDeleteSelected} disabled={selectedUsers.length === 0} />
                 </div>
             </div>
         </>
     );      
 }
 
-const PostList = ({ posts }) => {
+const PostList = ({ posts, selectedUsers, onUserSelect }) => {
 
     return(
         <>
-            {posts?.map((post,i) => (
-                <tr className="border-b dark:border-gray-700" key={`${post.email}-${post.last_name}`}>
-                    <li className="flex mt-3 justify-center">
-                        <input id="chkbx" type="checkbox" value="" className="px-2 py-2 h-4 w-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                    </li>
-                    <td className="px-4 py-3">{post.first_name}</td>
+            {posts?.map((post,i) => {
+                const isSelected = selectedUsers.some(user => user.email === post.email);
+
+                return (
+                    <tr className="border-b dark:border-gray-700" key={`${post.email}-${post.last_name}`}>
+                        <li className="flex mt-3 justify-center">
+                            <input id="chkbx" type="checkbox" checked={isSelected} onChange={e => onUserSelect(post, e.target.checked)} className="px-2 py-2 h-4 w-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                        </li>
+                        <td className="px-4 py-3">{post.first_name}</td>
                     <td className="px-4 py-3">{post.last_name}</td>
                     <td className="px-4 py-3">{post.email}</td>
                     <td className="px-4 py-3">{post.position}</td>
                 </tr>
-            ))}
+                );
+            })}
         </>
     )
 };

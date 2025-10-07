@@ -5,9 +5,10 @@ import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import { Label, Modal } from "flowbite-react";
 import { PlusIcon } from '@heroicons/react/outline';
 import { UsersTable } from '@/components/UsersTable';
-import { academicInstituteUsers } from '@/config/endpoints';
-import { axiosInstance } from '@/config/axiosConfig';
+import { useAddAcademicInstituteUsers } from "@/hooks/useAddAcademicInstituteUsers";
 import { useAITableSearch } from '@/hooks/useAITableSearch';
+import { useAcademicInstituteUsers } from '@/hooks/useAcademicInstituteUsers';
+import { useDeleteAcademicInstituteUsers } from '@/hooks/useDeleteAacademicInstituteUsers';
 import Button from '@/components/Button';
 import DefaultLayoutAI from '@/components/layouts/DefaultLayoutAI';
 import Head from 'next/head'
@@ -24,13 +25,18 @@ export default function UserManagement() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
-  const [users, setUsers] = useState(null);
   const [errorMsg, setErrorMsg] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const { fields, updateKeyValuePair, resetKey } = useField({
     keyword: '',
     p: 1,
   });
+
+  const { data:userData } = useAcademicInstituteUsers();
+  const addUserMutation = useAddAcademicInstituteUsers();
+  const deleteUserMutation = useDeleteAcademicInstituteUsers();
+
+  const users = userData?.[userData.length - 1] || null;
 
   const handleChange = (event) => {
       updateKeyValuePair(event.target.name, event.target.value);
@@ -41,17 +47,35 @@ export default function UserManagement() {
     handleSearchReset();
   };
 
-  useEffect(() => {
-    axiosInstance
-    .get(academicInstituteUsers)
-    .then(resp => {
-        console.log("api data", resp.data.members);
-        setUsers(resp.data[resp.data.length - 1]);
-    })
-    .catch((err) => {
-        console.log('Error on fetching academic Institute Users data');
-      });
-  }, []);
+  const handleDeleteUser = userToDelete => {
+    if (!users?.id) {
+      console.error('No academic institute ID available');
+      return;
+    }
+
+    const filterUser = userList => userList?.filter(user => user.email !== userToDelete.email) || [];
+
+    const updatedAdministrators = filterUser(users.administrators);
+    
+    const updatedMembers = filterUser(users.members);
+
+    const updatedUsers = {
+      administrators: updatedAdministrators,
+      members: updatedMembers
+    };
+
+    deleteUserMutation.mutate(
+      { instituteId: users.id, updatedUsers },
+      {
+        onSuccess: () => {
+          console.log('User deleted successfully');
+        },
+        onError: (error) => {
+          console.error('Error deleting user:', error);
+        }
+      }
+    );
+  };
 
   const adminUser = useMemo(() => 
     users ? users.administrators : null
@@ -176,36 +200,41 @@ export default function UserManagement() {
                 <Modal.Footer className='flex flex-col'>
   
                   <Button className='w-full' onClick={(e) => { 
-                    
-                    let isValid = true;
-                    const newErrors = {};
-
-                    //setOpenModal(false); 
                     if (!email) {
                       setErrorMsg(true);
                       clearFields()
                       return;
                     }
 
-                    // API Call 
-                    axiosInstance.patch(academicInstituteUsers+`${users?.id}/`, 
-                    {"members":
-                      [{
-                        "email": email,
-                        "first_name": firstName,
-                        "last_name": lastName,
-                        "position": role,
-                      }]
-                    }).then(resp => {
-                      console.log("response", resp);
-                    }).catch((err) => {
-                      console.log('Error on adding new user');
-                    });
+                    if (!users?.id) {
+                      console.error('No academic institute ID available');
+                      setErrorMsg(true);
+                      return;
+                    }
 
-                    //clear fields
-                    setDisplayContent(true);
-                    clearFields();             
-                  }}>Add User</Button>
+                    const userData = {
+                      email: email,
+                      first_name: firstName,
+                      last_name: lastName,
+                      position: role,
+                    };
+
+                    addUserMutation.mutate(
+                      { instituteId: users.id, userData },
+                      {
+                        onSuccess: () => {
+                          setDisplayContent(true);
+                          clearFields();
+                        },
+                        onError: () => {
+                          setErrorMsg(true);
+                        }
+                      }
+                    );
+                  }}
+                >
+                  Add User
+                </Button>
                   {displayContent ?
                     (
                       <div className='flex flex-row mt-2 pr-5 text-green-600'>
@@ -239,6 +268,7 @@ export default function UserManagement() {
                   data={filteredData?.oneGroup}
                   currentPage={currentPage}
                   setCurrentPage={setCurrentPage}
+                  onDeleteUser={handleDeleteUser}
               />}
             </Tabs.Item>
             <Tabs.Item title={
@@ -256,6 +286,7 @@ export default function UserManagement() {
                   data={filteredData?.all}
                   currentPage={currentPage}
                   setCurrentPage={setCurrentPage}
+                  onDeleteUser={handleDeleteUser}
                 />}
               
             </Tabs.Item>

@@ -3,11 +3,13 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { academicInstituteUsers } from '@/config/endpoints';
 import { axiosInstance } from '@/config/axiosConfig';
+
 /**
  * @function useDeleteAcademicInstituteUser
  * @description Hook to delete a user from AI by updating the entire user list
  * @returns {useMutation}
  */
+
 export function useDeleteAcademicInstituteUsers() {
   const queryClient = useQueryClient();
   
