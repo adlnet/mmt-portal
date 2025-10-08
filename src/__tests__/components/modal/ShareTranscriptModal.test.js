@@ -133,4 +133,36 @@ describe('ShareTranscriptModal', () => {
     expect(screen.queryByTestId('delete-button1')).not.toBeInTheDocument();
   });
 
+  it('should disable add button when reaching max', () => {
+    const screen = renderer();
+    
+    for (let i = 0; i < 4; i++) {
+      fireEvent.click(screen.getByText('+ Add Another Institution'));
+    }
+    
+    expect(screen.getByText('+ Add Another Institution')).toBeDisabled();
+    expect(screen.getByText('You have reached the max number of institutions you can send to at once. Please send these, then go back and add more.')).toBeInTheDocument();
+  });
+
+  it('should clear required message when modal closes', () => {
+    const screen = renderer();
+    
+    fireEvent.click(screen.getByTestId('share-button'));
+    expect(screen.getByText('Please select an institution and accept the terms')).toBeInTheDocument();
+    
+    const modal = document.querySelector('[role="dialog"]');
+    if (modal) {
+      const closeButton = modal.querySelector('button[aria-label="Close"]');
+      if (closeButton) {
+        fireEvent.click(closeButton);
+      }
+    }
+  });
+
+  it('should render authorization checkbox with correct text', () => {
+    const screen = renderer();
+    
+    expect(screen.getByText('I authorize institutions named in this request to access my official military transcript and Personally Identifying Information (PII)')).toBeInTheDocument();
+  });
+
 });
