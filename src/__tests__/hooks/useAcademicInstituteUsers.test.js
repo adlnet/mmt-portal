@@ -2,11 +2,11 @@
 
 import { QueryClientWrapper } from '@/__mocks__/queryClientMock';
 import { renderHook, waitFor } from '@testing-library/react';
-import { useAcademicInstitute } from '@/hooks/useAcademicInstitute';
+import { useAcademicInstituteUsers } from "@/hooks/useAcademicInstituteUsers";
 import academicInstituteData from '@/__mocks__/data/academicInstitute.data';
 import mockAxios from 'jest-mock-axios';
 
-jest.unmock('@/hooks/useAcademicInstitute');
+jest.unmock('@/hooks/useAcademicInstituteUsers');
 
 const { mockAcademicInstituteData } = academicInstituteData;
 
@@ -14,10 +14,10 @@ const wrapper = ({ children }) => (
   <QueryClientWrapper>{children}</QueryClientWrapper>
 );
 
-describe('useAcademicInstitute', () => {
+describe('useAcademicInstituteUsers', () => {
   it('should make an API call', async () => {
     mockAxios.get.mockResolvedValueOnce({ data: mockAcademicInstituteData });
-    const { result } = renderHook(() => useAcademicInstitute(), { wrapper });
+    const { result } = renderHook(() => useAcademicInstituteUsers(), { wrapper });
 
     await waitFor(() => {
       expect(result.current.data).toEqual(mockAcademicInstituteData);
@@ -27,10 +27,10 @@ describe('useAcademicInstitute', () => {
   });
 
   it('should handle error', async () => {
-    const mockError = new Error('Failed to fetch AI');
+    const mockError = new Error('Failed to fetch users');
     mockAxios.get.mockRejectedValueOnce(mockError);
 
-    const { result } = renderHook(() => useAcademicInstitute(), { wrapper });
+    const { result } = renderHook(() => useAcademicInstituteUsers(), { wrapper });
 
     await waitFor(() => {
       expect(result.current.isError).toBe(true);
