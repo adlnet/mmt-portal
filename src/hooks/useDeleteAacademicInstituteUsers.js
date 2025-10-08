@@ -1,8 +1,8 @@
 'use strict';
 
-import { useMutation, useQueryClient } from 'react-query';
 import { academicInstituteUsers } from '@/config/endpoints';
 import { axiosInstance } from '@/config/axiosConfig';
+import { useMutation, useQueryClient } from 'react-query';
 
 /**
  * @function useDeleteAcademicInstituteUser

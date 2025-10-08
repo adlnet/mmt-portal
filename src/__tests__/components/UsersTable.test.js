@@ -2,7 +2,7 @@
 
 import { QueryClientWrapper } from '@/__mocks__/queryClientMock';
 import { UsersTable } from '@/components/UsersTable';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 const mockUserData = [
   {
