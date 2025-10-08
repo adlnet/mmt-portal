@@ -53,7 +53,7 @@ export function UsersTable({ data, currentPage, setCurrentPage, onDeleteUser }) 
     // Handle delete selected users
     const handleDeleteSelected = () => {
         selectedUsers.forEach(user => {
-            onDeleteUser && onDeleteUser(user);
+            onDeleteUser?.(user);
         });
 
         // Clear after deletion
@@ -77,7 +77,7 @@ export function UsersTable({ data, currentPage, setCurrentPage, onDeleteUser }) 
                                 </tr>
                             </thead>
                             <tbody>
-                                {loading ? <p>Loading...</p> : <PostList posts={currentPosts} selectedUsers={selectedUsers} onUserSelect={handleUserSelect} />}
+                                <PostList posts={currentPosts} selectedUsers={selectedUsers} onUserSelect={handleUserSelect} />
                             </tbody>
                         </table>
                     </div>
