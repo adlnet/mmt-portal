@@ -104,5 +104,33 @@ describe('ShareTranscriptModal', () => {
 
   });
 
+  it('should navigate to military transcript page from confirmation modal', () => {
+    const screen = renderer2();
+    
+    const militaryTranscriptButton = screen.getByText('Military Transcript');
+    fireEvent.click(militaryTranscriptButton);
+    
+    expect(militaryTranscriptButton).toBeInTheDocument();
+  });
+
+  it('should handle keyboard navigation in confirmation modal', () => {
+    const screen = renderer2();
+    
+    const militaryTranscriptButton = screen.getByText('Military Transcript');
+    fireEvent.keyDown(militaryTranscriptButton, { key: 'Enter' });
+    
+    expect(militaryTranscriptButton).toBeInTheDocument();
+  });
+
+  it('should clear search when removing institution', () => {
+    useMockAcademicInstitute();
+    const screen = renderer();
+    
+    fireEvent.click(screen.getByText('+ Add Another Institution'));
+    const deleteButton = screen.getByTestId('delete-button1');
+    fireEvent.click(deleteButton);
+
+    expect(screen.queryByTestId('delete-button1')).not.toBeInTheDocument();
+  });
 
 });

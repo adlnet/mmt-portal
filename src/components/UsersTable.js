@@ -12,19 +12,12 @@ export const users = [];
 export function UsersTable({ data, currentPage, setCurrentPage, onDeleteUser }) {
 
     const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [postsPerPage] = useState(10);
     const [selectedUsers, setSelectedUsers] = useState([]);
 
     useEffect(() => {
         const fetchPosts = async () => {
-            setLoading(true);
-
-            // res = await axios.get("https://jsonplaceholder.typicode.com/posts");
-            //setPosts(res.data);
-            //console.log("data been passed: ", data.data)
             setPosts(data);
-            setLoading(false);
         };
 
         fetchPosts();
