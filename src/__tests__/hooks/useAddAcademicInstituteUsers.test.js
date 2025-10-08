@@ -1,7 +1,7 @@
 'use strict'
 
 import { QueryClientWrapper } from '@/__mocks__/queryClientMock';
-import { renderHook, waitFor, act } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { useAddAcademicInstituteUsers } from '@/hooks/useAddAcademicInstituteUsers';
 import mockAxios from 'jest-mock-axios';
 
