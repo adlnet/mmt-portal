@@ -231,7 +231,7 @@ Create a `.env.local` file in the root directory to configure environment-specif
 NEXT_PUBLIC_API_BASE_URL=your_api_base_url
 ```
 
-NEXT_PUBLIC_API_BASE_URL is required and is used to connected this front end application to the backend where data is stored. 
+NEXT_PUBLIC_API_BASE_URL is a link to where the MMT Backend application is being hosted. It is required and used to connected to the backend where data is stored. 
 
 ## Learn More
 
