@@ -1,11 +1,11 @@
 # MMT Portal
 
-A modern web portal for managing Modernized Military Transcript (MMT) operations. Built with Next.js, React, and Tailwind CSS, this application provides a comprehensive solution for transcript management, academic institution administration, and user tracking.
+A modern web portal for managing Modernized Military Transcript (MMT) operations. Built with Next.js, React, and Tailwind CSS, this application provides a comprehensive solution for transcript management, academic institution administration, and user tracking. This is purely they front end Application and relies on the MMT Backend to function. 
 
 ## Table of Contents
 
-- [Features](#features)
 - [Prerequisites](#prerequisites)
+- [Features](#features)
 - [Getting Started](#getting-started)
 - [Available Scripts](#available-scripts)
 - [Project Structure](#project-structure)
@@ -16,7 +16,22 @@ A modern web portal for managing Modernized Military Transcript (MMT) operations
 - [Contributing](#contributing)
 - [Learn More](#learn-more)
 
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **[Node.js](https://nodejs.org/)** (version 14.x or higher)
+- **[Yarn](https://yarnpkg.com/)** package manager
+- **[Docker](https://www.docker.com/)** (optional, for containerized deployment)
+
+Running the MMT Backend with this application is mandatory for the features and functionalities to work. 
+To see how to run the backend application, follow the link below:
+
+- **[MMT Backend](https://github.com/adlnet/mmt-backend)** github link 
+
 ## Features
+
+**Note:** MMT Backend must be running for these features to work.
 
 - **Transcript Management**: Create, track, and manage military transcripts
 - **Academic Institute Administration**: Manage academic institutions and their associated data
@@ -25,15 +40,7 @@ A modern web portal for managing Modernized Military Transcript (MMT) operations
 - **Announcements System**: Centralized announcements and updates management
 - **Responsive Design**: Mobile-first design approach using Tailwind CSS
 - **Real-time Updates**: Live data updates using React Query
-- **Accessibility**: WCAG compliant interface components
-
-## Prerequisites
-
-Before you begin, ensure you have the following installed:
-
-- **[Node.js](https://nodejs.org/)** (version 14.x or higher)
-- **[Yarn](https://yarnpkg.com/)** package manager
-- **[Docker](https://www.docker.com/)** (optional, for containerized deployment)
+- **Accessibility**: WCAG compliant interface components 
 
 ## Getting Started
 
@@ -222,9 +229,9 @@ Create a `.env.local` file in the root directory to configure environment-specif
 ```env
 # API Configuration
 NEXT_PUBLIC_API_BASE_URL=your_api_base_url
-
-# Add other environment variables as needed
 ```
+
+NEXT_PUBLIC_API_BASE_URL is required and is used to connected this front end application to the backend where data is stored. 
 
 ## Learn More
 
