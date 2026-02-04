@@ -1,3 +1,4 @@
+
 # MMT Portal
 
 A modern web portal for managing Modernized Military Transcript (MMT) operations. Built with Next.js, React, and Tailwind CSS, this application provides a comprehensive solution for transcript management, academic institution administration, and user tracking. This is purely they front end Application and relies on the MMT Backend to function. 
@@ -285,6 +286,7 @@ cp .env.example .env.local
 - [React Documentation](https://reactjs.org/docs/getting-started.html)
 - [React Hooks](https://reactjs.org/docs/hooks-intro.html)
 - [React Query Documentation](https://react-query.tanstack.com/)
+
 
 ### Tailwind CSS
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
