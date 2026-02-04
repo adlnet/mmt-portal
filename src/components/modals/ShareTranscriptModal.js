@@ -40,11 +40,6 @@ export default function ShareTranscriptModal({ openModal, setOpenModal, confirmM
       return;
     }
 
-    else if (instituteArray.map((institute) => (Object.keys(institute).length === 0) ? false : true ).includes(false)) {
-      setRequiredMessage('Please select an institution for every dropdown or delete dropdown');
-      return;
-    }
-
     else if (!isAccepted) {
       setRequiredMessage('Please accept the terms');
       return;

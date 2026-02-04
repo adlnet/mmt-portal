@@ -34,12 +34,12 @@ export default function Home() {
 
   const transcriptId = transcriptData?.[0]?.id ?? null;
 
+  // Mockdata for now, will be replaced with real data later
   const data = [
-    {date:"January 30, 2025", time: "12:44 PM EST", announcement: "ARMY, NAVY, MARINE CORPS, SPACE FORCE: All veterans, active duty, National Guard Personnel should use the Joint Services Transcript (JST).", type: "dismiss"},
-    {date:"July 23, 2025", time: "9:00 AM EST", announcement: "This tool is currently being piloted to select service members for the US Coast Guard. If you're accessing the MMT from another Service, you may not see any records — this is expected throughout the duration of the pilot effort. We appreciate your understanding as we continue to expand access.", type: "dismiss"}
+    {date:"January 30, 2025", time: "12:44 PM EST", announcement: "ARMY, NAVY, MARINE CORPS, SPACE FORCE: All veterans, active duty, National Guard Personnel should use the Joint Services Transcript (JST).", type: "dismiss"}
   ];
-  
-  const [mockData, setMockData] = useState(data);
+
+  const [mockData] = useState(data);
 
   const handleTranscript = transcriptAction => {
     if (transcriptId) {
@@ -58,31 +58,6 @@ export default function Home() {
   }
 
   const handleDownloadTranscript = () => handleTranscript('downloadModernized');
-
-  // Check if user has given consent already, checking local storage as of now as a proof of concept
-  useEffect(() => {
-    if (localStorage.getItem('userInfoConsent')) {
-      const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' } );
-      const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'});
-      const consentAnnouncement = {
-        date: date,
-        time: time,
-        announcement: (
-          <span> You have given consent to use your data. If you would like to make some changes to the consent, please{' '}
-            <span className='text-blue-500 cursor-pointer' role="button" tabIndex={0} onClick={() => {
-              localStorage.removeItem('userInfoConsent');
-              window.location.reload();
-            }}
-            onKeyDown={() => {}}
-            >Click Here</span>
-          </span>
-        ),
-        type: "persist"
-      };
-
-      // setMockData(prevData => [consentAnnouncement, ...prevData]);
-    }
-  }, []);
 
   return (
     <div>
@@ -140,7 +115,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className='bg-white border rounded-md border-gray-200 p-4 shadow-lg focus:shadow-lg px-5 my-8 mr-4'>
+          <div className='bg-white border rounded-md border-gray-200 p-4 shadow-lg focus:shadow-lg px-5 my-8'>
             <h1 className='flex text-xl font-semibold h-6 mb-2'>
             What is Modernized Military Transcript (MMT)?
             </h1>
@@ -172,7 +147,7 @@ export default function Home() {
             }
           </div>
 
-          <div className='bg-white border rounded-md border-gray-200 p-4 shadow-lg focus:shadow-lg px-5mr-4 mb-8'>
+          <div className='bg-white border rounded-md border-gray-200 p-4 shadow-lg focus:shadow-lg px-5 mb-8'>
             <h1 className='flex text-xl font-semibold h-6 mb-3'>
               My Updates
             </h1>

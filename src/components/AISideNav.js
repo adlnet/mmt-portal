@@ -1,7 +1,7 @@
 'use strict';
 
 import {  } from "@heroicons/react/solid";
-import { DocumentTextIcon, QuestionMarkCircleIcon, UserGroupIcon} from "@heroicons/react/outline";
+import { DocumentTextIcon, QuestionMarkCircleIcon, UserGroupIcon, DocumentAddIcon} from "@heroicons/react/outline";
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -32,6 +32,15 @@ export default function AcademicInstituteSideNav() {
             >
               <DocumentTextIcon className="h-5 flex-shrink-0 mt-2"/>
               Modernized Military Transcript 
+            </Link>
+            <Link
+              href="/academicInstitute/requestTranscript"
+              passHref
+              rel="noopener noreferrer"
+              className={`flex flex-row gap-4 hover:cursor hover:font-bold hover:underline ${isActivePath('/academicInstitute/requestTranscript') ? 'font-bold text-purple bg-light-purple p-1 rounded-md' : ''}`}
+            >
+              <DocumentAddIcon className="h-5 mt-1"/>
+              Transcript Request 
             </Link>
             <Link
               href="/academicInstitute/userManagement"

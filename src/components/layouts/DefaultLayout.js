@@ -1,6 +1,5 @@
 'use strict';
 
-import ConsentModal from '@/components/modals/ConsentModal';
 import SideNav from '../SideNav';
 
 export default function DefaultLayout({ children, footerLocation }) {
@@ -10,7 +9,6 @@ export default function DefaultLayout({ children, footerLocation }) {
       <SideNav />
       <div className='w-5/6 max-w-7xl mx-auto pr-8 sm:pr-6 lg:pr-10'>
         {children}
-        <ConsentModal /> 
       </div>
       {/* <Footer location={footerLocation} /> */}
     </div>

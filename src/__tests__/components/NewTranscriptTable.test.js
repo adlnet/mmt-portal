@@ -2,15 +2,38 @@
 
 import { NewTranscriptTable } from '@/components/NewTranscriptTable';
 import { QueryClientWrapper } from '@/__mocks__/queryClientMock';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useMockTranscriptStatus } from '@/__mocks__/predefinedMocks';
 import transcriptStatusTableData from '@/__mocks__/data/transcriptStatus.data';
 
-const renderer = () => {
+jest.mock('@/hooks/useTranscript', () => ({
+  downloadTranscript: jest.fn()
+}));
+
+jest.mock('@/hooks/useTranscriptLegacy', () => ({
+  downloadTranscriptLegacy: jest.fn()
+}));
+
+jest.mock('@/utils/exportToExcel', () => ({
+  exportToExcel: jest.fn()
+}));
+
+const mockProps = {
+  data: transcriptStatusTableData.mockTranscriptStatusData,
+  currentPage: 1,
+  setCurrentPage: jest.fn(),
+  onFiltersChange: jest.fn(),
+  transcriptStatusFilters: {
+    status: '',
+    branch: '',
+    recent: false
+  }
+};
+
+const renderer = (props = mockProps) => {
   return render(
     <QueryClientWrapper>
-      <NewTranscriptTable data={transcriptStatusTableData.mockTranscriptStatusData}
-                    currentPage={1}/>
+      <NewTranscriptTable {...props} />
     </QueryClientWrapper>
   );
 };
@@ -38,4 +61,32 @@ describe('New Transcript Table Tests', () => {
       fireEvent.click(screen.getByText('Download'))
 
     })
+
+    it('Tests that the Legacy Download Button works', () => {
+      useMockTranscriptStatus();
+      const screen = renderer()
+      fireEvent.click(screen.getByText('Download'))
+      fireEvent.click(screen.getByText('Legacy'))
+
+    })
+
+    it('Tests that the Modernized Download Button works', () => {
+      useMockTranscriptStatus();
+      const screen = renderer()
+      fireEvent.click(screen.getByText('Download'))
+      fireEvent.click(screen.getByText('Modernized'))
+
+    })
+
+   it('should handle recent filter changes', () => {
+      useMockTranscriptStatus();
+      const screen = renderer();
+      
+      fireEvent.click(screen.getByText('Recent'));
+      
+      fireEvent.click(screen.getByText('Last 30 Days'));
+      
+      expect(mockProps.onFiltersChange).toHaveBeenCalledWith('recent', true);
+    });
+
 });
