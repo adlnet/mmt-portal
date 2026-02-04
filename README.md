@@ -224,14 +224,18 @@ docker run -p 3000:3000 mmt-portal
 
 ## Environment Variables
 
-Create a `.env.local` file in the root directory to configure environment-specific variables:
+The application requires environment variables to connect to backend services. 
 
-```env
-# API Configuration
-NEXT_PUBLIC_API_BASE_URL=your_api_base_url
+1. Copy the example environment file:
+```bash
+cp .env.example .env.local
 ```
 
-NEXT_PUBLIC_API_BASE_URL is a link to where the MMT Backend application is being hosted. It is required and used to connect to the backend where data is stored. 
+2. Configure the following variables in `.env.local`:
+
+| Variable | Description | 
+|----------|-------------|
+| `NEXT_PUBLIC_BACKEND_HOST` | MMT Backend API URL |
 
 ## Learn More
 
