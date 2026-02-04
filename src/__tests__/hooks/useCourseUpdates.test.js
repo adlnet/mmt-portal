@@ -25,5 +25,17 @@ describe('useCourseUpdate', () => {
   
     expect(mockAxios.get).toHaveBeenCalledTimes(1);
   });
+
+  it('should handle error', async () => {
+    const mockError = new Error('Failed to fetch course updates');
+    mockAxios.get.mockRejectedValueOnce(mockError);
+
+    const { result } = renderHook(() => useCourseUpdates(), { wrapper });
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true);
+    });
+
+  });
   
 });
