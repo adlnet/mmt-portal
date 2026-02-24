@@ -1,7 +1,7 @@
 
 # MMT Portal
 
-A modern web portal for managing Modernized Military Transcript (MMT) operations. Built with Next.js, React, and Tailwind CSS, this application provides a comprehensive solution for transcript management, academic institution administration, and user tracking. This is purely they front end Application and relies on the MMT Backend to function. 
+A modern web portal for managing Modernized Military Transcript (MMT) operations. Built with Next.js, React, and Tailwind CSS, this application provides a comprehensive solution for transcript management, academic institution administration, and user tracking. This is purely the front end Application and relies on the [MMT Backend](https://github.com/adlnet/mmt-backend) to function. 
 
 ## Table of Contents
 
@@ -86,7 +86,7 @@ To see how to run the backend application, follow the link below:
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/adlnet/mmt-portal.git
 cd mmt-portal
 ```
 
@@ -296,3 +296,11 @@ cp .env.example .env.local
 - [Jest Documentation](https://jestjs.io/docs/getting-started)
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 - [Cypress Documentation](https://docs.cypress.io/)
+
+### Additional Information
+* [MMT Wiki can be found here](https://github.com/adlnet/mmt-portal/wiki)
+
+## License
+This project uses the [Apache](http://www.apache.org/licenses/LICENSE-2.0) license.
+
+
